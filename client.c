@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/04/16 16:03:07 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/16 16:59:35 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ void	send_bits(pid_t pid, char *str)
 				}
 			}
 			j++;
-			usleep(100);
+			usleep(100);// random sleep value 100 looks good
 		}
 		i++;
 	}
 }
-// check if client recieves the string/prints it
+// check if server is alive
 void	recieve_answer(int signal)
 {
 	if (signal == SIGUSR1)
@@ -103,3 +103,6 @@ int	main(int argc, char **argv)
 	}
 	return (0);
 }
+
+// i am clueless if i can just send the string bit by bit and print it bit by bit
+// or if i need to check the length send the lenght decode the lenght and then malloc
