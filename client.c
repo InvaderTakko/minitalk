@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/04/16 13:17:41 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/16 16:03:07 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,52 @@
 #include "libft/libft.h"
 #include "libft/ft_printf_bonus.h"
 #include <unistd.h>
+
 // send the bits with magic
 void	send_bits(pid_t pid, char *str)
 {
+	int	i;
+	int	j;
 
+	i = 0;
+	while (str[i])
+	{
+		j = 0;
+		while (j < 8) // 8 bits in a byte
+		{
+			if (str[i] & (1 << j)) // check if bit j is 1 and bitshift
+			{
+				if (kill(pid, SIGUSR1) == -1)
+				{
+					ft_printf("Computer says no\n"); // pick better error message
+					exit(EXIT_FAILURE);
+				}
+			}
+			else // if bit is 0
+			{
+				if (kill(pid, SIGUSR2) == -1)
+				{
+					ft_printf("Computer says no\n"); // pick better error message
+					exit(EXIT_FAILURE);
+				}
+			}
+			j++;
+			usleep(100);
+		}
+		i++;
+	}
 }
 // check if client recieves the string/prints it
 void	recieve_answer(int signal)
 {
 	if (signal == SIGUSR1)
 	{
-		ft_printf("Great Success\nVery nice\n");
+		ft_printf("Great Success\nVery nice\n"); // pick better message
 		exit(EXIT_SUCCESS);
 	}
 	else if (signal == SIGUSR2)
 	{
-		ft_printf("Blyat\n");
+		ft_printf("Blyat\n"); // pick better message
 		exit(EXIT_FAILURE);
 	}
 }
