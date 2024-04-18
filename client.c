@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/04/16 16:59:35 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/18 17:31:19 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <unistd.h>
 
 // send the bits with magic
-void	send_bits(pid_t pid, char *str)
+void	send_bits(pid_t pid, char *str, siginfo_t *info)
 {
 	int	i;
 	int	j;
@@ -43,6 +43,7 @@ void	send_bits(pid_t pid, char *str)
 					exit(EXIT_FAILURE);
 				}
 			}
+			info->si_signo = ft_strlen(str);
 			j++;
 			usleep(100);// random sleep value 100 looks good
 		}

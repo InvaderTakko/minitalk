@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:10 by sruff             #+#    #+#             */
-/*   Updated: 2024/04/18 12:37:52 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/18 17:37:59 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char 	*decode_strlen()
 	static long len;
 	static count;
 
-	if (count == pidsize + int or long size)
+	if (count == int or long size)
 	{
 		string = malloc(len);
 		count++;
@@ -37,9 +37,14 @@ void sig_handler(int signum, siginfo_t *info)
 {
 	static int bit_counter;
 	static char c;
+	static int str_len;
+	static int pid;
 
 	bit_counter = 0;
 	c = 0;
+	if (pid == 0)
+		pid = info->si_pid;
+	str_len = info->si_signo;
 	// (void)context; // dont need it so we silence it
 	if (signum == SIGUSR1)
 		c |= 1 << bit_counter;
