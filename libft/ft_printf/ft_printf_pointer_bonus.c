@@ -6,12 +6,12 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 19:10:08 by sruff             #+#    #+#             */
-/*   Updated: 2023/11/28 18:22:02 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/22 16:20:26 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //#include <stdio.h>
-#include "ft_printf_bonus.h"
+#include "../ft_printf_bonus.h"
 
 int	loop(unsigned long nbr, char *hexset, int count, t_pf *pf)
 {

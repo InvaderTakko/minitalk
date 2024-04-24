@@ -6,7 +6,7 @@
 #    By: sruff <sruff@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/23 14:34:25 by sruff             #+#    #+#              #
-#    Updated: 2024/04/09 15:10:00 by sruff            ###   ########.fr        #
+#    Updated: 2024/04/22 16:22:40 by sruff            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ OBJ = $(SRC:%.c=%.o)
 NAME = libft.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 
 .PHONY: all clean fclean re
 
