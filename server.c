@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:10 by sruff             #+#    #+#             */
-/*   Updated: 2024/04/24 17:52:22 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/24 18:50:56 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ static void  bit_to_char(int sig, char *c, int flag)
 	{	
 		if (flag == 1)
 		{
-		bit = 0;
-		*c = 0;
+			bit = 0;
+			*c = 0;
 		}
 	}
 }
@@ -59,8 +59,11 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 	static char *c;
 	static size_t str_len;
 	static int flag;
+	static int pid;
 
 	(void)context; // dont need it so we silence it
+	if (pid == 0)
+		pid = info->si_pid;
 	if (get_str_len(signum, &str_len, &bit_counter) == 1)
 	{
 		if (str_len == 0)
@@ -71,18 +74,21 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 			ft_printf("Malloc failed\n");
 			exit(EXIT_FAILURE);
 		}
+		str[str_len] = '\0';
 	}
 	else if  (bit_counter > sizeof(size_t) * 8)
 	{	
 		bit_to_char(signum, c, flag);
-
 		if(bit_counter % 8 == 0)
 		{
 			str[bit_counter - sizeof(size_t) * 8] = *c;
 			flag = 1;
 			
 		}
-	}	
+	}
+	// once bitcounter == (str_len +1) * sizeof(size_t) * 8 we can print the string
+	// send signal to client that we are done
+	// and free the string
 
 	// if (signum == SIGUSR1)
 	// 	c |= 1 << bit_counter++;
