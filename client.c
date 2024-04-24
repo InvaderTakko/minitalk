@@ -6,14 +6,12 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/04/18 17:31:19 by sruff            ###   ########.fr       */
+/*   Updated: 2024/04/24 17:57:40 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include "libft/libft.h"
-#include "libft/ft_printf_bonus.h"
-#include <unistd.h>
+#include "minitalk.h"
+
 
 // send the bits with magic
 void	send_bits(pid_t pid, char *str, siginfo_t *info)
@@ -27,7 +25,7 @@ void	send_bits(pid_t pid, char *str, siginfo_t *info)
 		j = 0;
 		while (j < 8) // 8 bits in a byte
 		{
-			if (str[i] & (1 << j)) // check if bit j is 1 and bitshift
+			if ((str[i] & (1 << j)) != 0) // check if bit j is 1 and bitshift
 			{
 				if (kill(pid, SIGUSR1) == -1)
 				{
@@ -43,15 +41,29 @@ void	send_bits(pid_t pid, char *str, siginfo_t *info)
 					exit(EXIT_FAILURE);
 				}
 			}
-			info->si_signo = ft_strlen(str);
+			// info->si_signo = ft_strlen(str);
 			j++;
-			usleep(100);// random sleep value 100 looks good
+			usleep(1000);// random sleep value 100 looks good
 		}
 		i++;
 	}
 }
+
+// void	sig_handler_c(int n, siginfo_t *info, void *context)
+// {
+// 	// static int	i;
+
+// 	(void)context;
+// 	(void)info;
+// 	(void)n;
+// 	// g_receiver = 1;
+// 	// if (n == SIGUSR2)
+// 	// 	i++;
+// 	// else if (n == SIGUSR1)
+// 	// 	ft_putstrnbr_fd("Num of bytes received -> ", i / 8);
+// }
 // check if server is alive
-void	recieve_answer(int signal)
+void	recieve_answer(int signal, siginfo_t *info, void *context)
 {
 	if (signal == SIGUSR1)
 	{
@@ -68,8 +80,13 @@ int	main(int argc, char **argv)
 {
 	struct sigaction	sa;
 	pid_t				pid;
+	siginfo_t			info;
+	
 
 	sigemptyset(&sa.sa_mask); // initalize
+	// sigaction = revieve_answer(getpid());
+	pid = ft_atoi(argv[1]);
+	// pid = 1234;
 	sa.sa_flags = SA_RESTART | SA_SIGINFO; // set flags or inialize???
 	if (argc == 3)
 	{
@@ -78,30 +95,25 @@ int	main(int argc, char **argv)
 			ft_printf("Error: Empty string\n");
 			return (1);
 		}
+
 		pid = ft_atoi(argv[1]);
 		sa.sa_handler = recieve_answer; // set handler
+
 		if (sigaction(SIGUSR1, &sa, NULL) == -1)
-		{
-			ft_printf("Error: sigaction\n");
-			return (1);
-		}
+			ft_printf("SIGURSR Error\n", 1);
 		if (sigaction(SIGUSR2, &sa, NULL) == -1)
-		{
-			ft_printf("Error: sigaction\n");
-			return (1);
-		}
-		while (1)
-		{
-			send_bits(pid, argv[2]);
-			pause();
-		}
-		// actual useful code here
+			ft_printf("SIGUSR Error\n", 1);
+		ft_printf("still alive\n");
+		send_bits(pid, argv[2], &info);
+		// pause(); // not sure if needed
+		// EXIT_SUCCESS;
+
 	}
 	else
 	{
-		// wrong input here
-		return (1);
+			return (1);
 	}
+
 	return (0);
 }
 
