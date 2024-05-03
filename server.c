@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:10 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/03 15:32:15 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/03 17:43:34 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ static	void 	bit_to_char(int sig, char *c, int *flag)
 // test later if i need void *context
 void sig_handler(int signum, siginfo_t *info, void *context)
 {
-	static size_t bit_counter = 0;
 	static char *str = NULL;
+	static size_t bit_counter = 0;
 	static char c = 0;
 	static size_t str_len;
 	static int flag;
@@ -69,6 +69,13 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 	// ft_printf("do i get here\n");
 	if (pid == 0)
 		pid = info->si_pid;
+	if (pid != info->si_pid)
+	{
+		kill(pid, SIGUSR2);
+		pid = 0;
+		ft_printf("Wrong PID\n");
+		exit(EXIT_FAILURE); // either exit or resets statics+free and let it run
+	}
 	if (get_str_len(signum, &str_len, &bit_counter) == 1)
 	{
 		if (str_len == 0)
@@ -96,6 +103,7 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 			{
 				ft_printf("String: %s\n", str);
 				free(str);
+				kill(pid, SIGUSR1);
 				str = NULL;
 				bit_counter = 0;
 				str_len = 0;
@@ -108,8 +116,15 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 }
 int	main(int argc, char **argv)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
+	static t_server		s;
 
+	s.str = NULL;
+	s.bit_counter = 0;
+	s.c = 0;
+	s.str_len = 0;
+	s.flag = 0;
+	s.pid = 0;
 	ft_printf("PID: %d\n", getpid());
 	sigemptyset(&sa.sa_mask); // initalize
 	sa.sa_flags = SA_RESTART | SA_SIGINFO; // set flags or inialize???

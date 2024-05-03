@@ -6,13 +6,13 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/03 15:09:56 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/03 17:20:09 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	send_len(pid_t pid, size_t len)
+void	send_str_len(pid_t pid, size_t len)
 {
 	size_t	bit;
 
@@ -23,7 +23,7 @@ void	send_len(pid_t pid, size_t len)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		usleep(150);
+		usleep(100);
 		bit++;
 	}
 	ft_printf("Length sent\n");
@@ -60,7 +60,7 @@ void	send_bits(pid_t pid, char *str, siginfo_t *info)
 			}
 			// info->si_signo = ft_strlen(str);
 			j++;
-			usleep(1000);// random sleep value 100 looks good
+			usleep(100);// random sleep value 100 looks good
 		}
 		i++;
 	}
@@ -116,17 +116,17 @@ int	main(int argc, char **argv)
 		}
 
 		pid = ft_atoi(argv[1]);
-		// sa.sa_handler = recieve_answer; // set handler
+		// sa.sa_handler = &recieve_answer; // set handler
 		sa.sa_sigaction = recieve_answer;
-		// if (sigaction(SIGUSR1, &sa, NULL) == -1)
-		// 	ft_printf("SIGURSR Error\n", 1);
-		// if (sigaction(SIGUSR2, &sa, NULL) == -1)
-		// 	ft_printf("SIGUSR Error\n", 1);
+		if (sigaction(SIGUSR1, &sa, NULL) == -1)
+			ft_printf("SIGURSR Error\n", 1);
+		if (sigaction(SIGUSR2, &sa, NULL) == -1)
+			ft_printf("SIGUSR Error\n", 1);
 		ft_printf("PID : %d\n", pid);
-		send_len(pid, ft_strlen(argv[2]));
+		send_str_len(pid, ft_strlen(argv[2]));
 		send_bits(pid, argv[2], &info);
-		// while (1)
-		// 	pause();
+		while (1)
+			pause();
 		// pause(); // not sure if needed
 		EXIT_SUCCESS;
 
