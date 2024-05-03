@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:10 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/03 13:54:49 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/03 15:32:15 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ static	void 	bit_to_char(int sig, char *c, int *flag)
 {
 	static int	bit;
 	
+	if (*flag == 1)
+	{
+		*flag = 0;
+		*c = 0;
+	}
+	
 	if (sig == SIGUSR1)
 		*c = *c | (1 << bit);
 	if (sig == SIGUSR2)
@@ -46,7 +52,6 @@ static	void 	bit_to_char(int sig, char *c, int *flag)
 	{
 		*flag = 1;
 		bit = 0;
-		*c = 0;
 	}
 }
 
@@ -64,11 +69,12 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 	// ft_printf("do i get here\n");
 	if (pid == 0)
 		pid = info->si_pid;
-	if (get_str_len(signum, &str_len, &bit_counter) == 0)
+	if (get_str_len(signum, &str_len, &bit_counter) == 1)
 	{
 		if (str_len == 0)
 			exit(EXIT_SUCCESS); // maybe its a fail? ft_printf("Empty string\n")
-		str = (char *)malloc(sizeof(char) * str_len + 1);
+		ft_printf("String length: %i\n", str_len);	
+		str = (char *)malloc(sizeof(char) * (str_len + 1));
 		if (!str)
 		{
 			ft_printf("Malloc failed\n");
@@ -76,17 +82,17 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 		}
 		str[str_len] = '\0';
 	}
-	else if  (bit_counter > sizeof(size_t) * 8)
-	{	
+	if  (bit_counter > sizeof(size_t) * 8)
+	{
 		bit_to_char(signum, &c, &flag);
 		if( flag == 1)
 		{
 			ft_printf("Char: %c\n", c);
-			str[bit_counter - sizeof(size_t) * 8] = c;
-			flag = 0;
-			c = 0;
-			ft_printf("String: %s\n", str);
-			if (bit_counter == (str_len) * sizeof(size_t) * 8)
+			str[(bit_counter - sizeof(size_t) * 8) / 8 - 1] = c;
+			// ft_printf("String: %s\n", str);
+			ft_printf("Bit counter: %i\n", bit_counter);
+			ft_printf("my calc %i\n", str_len * sizeof(char) * 8 + sizeof(size_t) * 8);
+			if (bit_counter == str_len * sizeof(char) * 8 + sizeof(size_t) * 8)
 			{
 				ft_printf("String: %s\n", str);
 				free(str);
@@ -94,6 +100,8 @@ void sig_handler(int signum, siginfo_t *info, void *context)
 				bit_counter = 0;
 				str_len = 0;
 				pid = 0;
+				c = 0;
+				flag = 0;
 			}
 		}
 	}
