@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:53:27 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/07 15:53:32 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/07 17:04:35 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,31 +42,26 @@ void	send_bits(pid_t pid, char *str)
 		{
 			if ((str[i] & (1 << j)) != 0) // check if bit j is 1 and bitshift
 			{
-				// ft_printf("%d\n", j);
 				if (kill(pid, SIGUSR1) == -1)
 				{
 					ft_printf("Computer says no 1\n"); // pick better error message
 					exit(EXIT_FAILURE);
 				}
 			}
-			else // if bit is 0
-			{
+			else
+			{	
 				if (kill(pid, SIGUSR2) == -1)
 				{
 					ft_printf("Computer says no 0\n"); // pick better error message
-					// perror("kill");
 					exit(EXIT_FAILURE);
 				}
 			}
-			// info->si_signo = ft_strlen(str);
 			j++;
 			usleep(100);// random sleep value 100 looks good
 		}
 		i++;
 	}
 }
-
-
 
 // void	sig_handler_c(int n, siginfo_t *info, void *context)
 // {
@@ -102,13 +97,11 @@ int	main(int argc, char **argv)
 	struct sigaction	sa;
 	pid_t				pid;
 	siginfo_t			info;
-	
 
 	sigemptyset(&sa.sa_mask); // initalize
 	// sigaction = revieve_answer(getpid());
 	pid = ft_atoi(argv[1]);
-	// pid = 1234;
-	sa.sa_flags = SA_RESTART | SA_SIGINFO; // set flags or inialize???
+	sa.sa_flags = SA_RESTART | SA_SIGINFO;
 	if (argc == 3)
 	{
 		if (ft_strlen(argv[2]) == 0)
@@ -116,29 +109,22 @@ int	main(int argc, char **argv)
 			ft_printf("Error: Empty string\n");
 			return (1);
 		}
-
 		pid = ft_atoi(argv[1]);
 		// sa.sa_handler = &recieve_answer; // set handler
 		sa.sa_sigaction = recieve_answer;
-		if (sigaction(SIGUSR1, &sa, NULL) == -1)
-			ft_printf("SIGURSR Error\n", 1);
-		if (sigaction(SIGUSR2, &sa, NULL) == -1)
-			ft_printf("SIGUSR Error\n", 1);
-		// ft_printf("PID : %d\n", pid);
+		// if (sigaction(SIGUSR1, &sa, NULL) == -1)
+		// 	ft_printf("SIGURSR Error\n", 1);
+		// if (sigaction(SIGUSR2, &sa, NULL) == -1)
+		// 	ft_printf("SIGUSR Error\n", 1);
 		send_str_len(pid, ft_strlen(argv[2]));
 		send_bits(pid, argv[2]);
 		(void)info;
 		while (1)
 			pause();
-		// pause(); // not sure if needed
 		EXIT_SUCCESS;
-
 	}
 	else
-	{
-			return (1);
-	}
-
+		return (1);
 	return (0);
 }
 
