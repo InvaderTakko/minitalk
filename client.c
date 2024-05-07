@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/03 17:20:09 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/07 13:31:52 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void	send_str_len(pid_t pid, size_t len)
 		usleep(100);
 		bit++;
 	}
-	ft_printf("Length sent\n");
+	// ft_printf("Length sent\n");
 }
 // send the bits with magic
-void	send_bits(pid_t pid, char *str, siginfo_t *info)
+void	send_bits(pid_t pid, char *str)
 {
 	int	i;
 	int	j;
@@ -42,7 +42,7 @@ void	send_bits(pid_t pid, char *str, siginfo_t *info)
 		{
 			if ((str[i] & (1 << j)) != 0) // check if bit j is 1 and bitshift
 			{
-				ft_printf("%d\n", j);
+				// ft_printf("%d\n", j);
 				if (kill(pid, SIGUSR1) == -1)
 				{
 					ft_printf("Computer says no 1\n"); // pick better error message
@@ -53,8 +53,8 @@ void	send_bits(pid_t pid, char *str, siginfo_t *info)
 			{
 				if (kill(pid, SIGUSR2) == -1)
 				{
-					// ft_printf("Computer says no 0\n"); // pick better error message
-					perror("kill");
+					ft_printf("Computer says no 0\n"); // pick better error message
+					// perror("kill");
 					exit(EXIT_FAILURE);
 				}
 			}
@@ -84,6 +84,8 @@ void	send_bits(pid_t pid, char *str, siginfo_t *info)
 // check if server is alive
 void	recieve_answer(int signal, siginfo_t *info, void *context)
 {
+	(void)context;
+	(void)info;
 	if (signal == SIGUSR1)
 	{
 		ft_printf("Great Success\nVery nice\n"); // pick better message
@@ -122,9 +124,10 @@ int	main(int argc, char **argv)
 			ft_printf("SIGURSR Error\n", 1);
 		if (sigaction(SIGUSR2, &sa, NULL) == -1)
 			ft_printf("SIGUSR Error\n", 1);
-		ft_printf("PID : %d\n", pid);
+		// ft_printf("PID : %d\n", pid);
 		send_str_len(pid, ft_strlen(argv[2]));
-		send_bits(pid, argv[2], &info);
+		send_bits(pid, argv[2]);
+		(void)info;
 		while (1)
 			pause();
 		// pause(); // not sure if needed
