@@ -6,7 +6,7 @@
 #    By: sruff <sruff@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/23 14:34:25 by sruff             #+#    #+#              #
-#    Updated: 2024/04/24 19:17:05 by sruff            ###   ########.fr        #
+#    Updated: 2024/05/07 14:39:49 by sruff            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ LIBFT = libft/libft.a
 INC = -I . -I libft
 CC = cc
 # CFLAGS = -g
-# CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra 
 
 all: $(NAME) $(NAMEC)
 
