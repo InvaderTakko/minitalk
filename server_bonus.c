@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:51:46 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/09 14:59:02 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/09 16:23:27 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	set_and_print_str(int sig, t_server *s)
 		s->str[(s->bit_counter - sizeof(size_t) * 8) / 8 - 1] = s->c;
 		if (s->bit_counter == s->str_len * 8 + sizeof(size_t) * 8)
 		{
-			ft_printf("String: %s\n", s->str);
+			ft_printf("%s\n", s->str);
 			free(s->str);
 			kill(s->pid, SIGUSR1);
 			ft_memset(s, 0, sizeof(t_server));
@@ -91,7 +91,7 @@ void	sig_handler(int signum, siginfo_t *info, void *context)
 	if (s.pid != info->si_pid)
 	{
 		kill(s.pid, SIGUSR2);
-		ft_printf("Wrong PID\n");
+		ft_printf("Error: you are sending from 2 clients at once\n");
 		free(s.str);
 		ft_memset(&s, 0, sizeof(t_server));
 		exit(EXIT_FAILURE);

@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:16:23 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/09 14:02:26 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/09 15:59:36 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	send_str_len(pid_t pid, size_t len)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		usleep(150);
+		usleep(50);
 		bit++;
 	}
 }
@@ -64,26 +64,11 @@ void	send_bits(pid_t pid, char *str)
 					print_exit("Could not send signal", 0);
 			}
 			j++;
-			usleep(150);
+			usleep(50);
 		}
 		i++;
 	}
 }
-
-// void	sig_handler_c(int n, siginfo_t *info, void *context)
-// {
-// 	// static int	i;
-
-// 	(void)context;
-// 	(void)info;
-// 	(void)n;
-// 	// g_receiver = 1;
-// 	// if (n == SIGUSR2)
-// 	// 	i++;
-// 	// else if (n == SIGUSR1)
-// 	// 	ft_putstrnbr_fd("Num of bytes received -> ", i / 8);
-// }
-// check if server is alive
 
 void	recieve_answer(int signal, siginfo_t *info, void *context)
 {
@@ -112,7 +97,6 @@ int	main(int argc, char **argv)
 			print_exit("Could not send signal", 0);
 		if (sigaction(SIGUSR2, &sa, NULL) == -1)
 			print_exit("Could not send signal", 0);
-		ft_printf("PID : %d\n", pid);
 		send_str_len(pid, ft_strlen(argv[2]));
 		send_bits(pid, argv[2]);
 		while (1)
