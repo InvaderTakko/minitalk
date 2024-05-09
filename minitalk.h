@@ -6,7 +6,7 @@
 /*   By: sruff <sruff@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 14:51:50 by sruff             #+#    #+#             */
-/*   Updated: 2024/05/09 16:27:09 by sruff            ###   ########.fr       */
+/*   Updated: 2024/05/09 17:00:47 by sruff            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,5 @@ typedef struct s_server {
 	int		flag;
 	int		pid;
 }	t_server;
-
 
 #endif
